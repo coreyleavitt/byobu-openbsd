@@ -222,6 +222,34 @@ setup() {
     [ -n "$pct" ]
 }
 
+@test "disk_io: iostat -DI produces per-disk KB output" {
+    result=$(iostat -DI 2>/dev/null | awk 'NR>1 && NF>=3 { print $1, $2; exit }')
+    [ -n "$result" ]
+    # First field should be a disk name, second should be a number (KB)
+    disk=$(echo "$result" | awk '{ print $1 }')
+    kb=$(echo "$result" | awk '{ print $2 }')
+    [ -n "$disk" ]
+    echo "$kb" | grep -qE '^[0-9]+\.?[0-9]*$'
+}
+
+@test "disk_io: root mount point maps to a disk device" {
+    part=$(mount | awk '$3 == "/" { print $1; exit }')
+    [ -n "$part" ]
+    # Strip partition letter to get disk name (e.g., sd0a -> sd0)
+    disk=$(echo "${part##*/}" | sed 's/[a-p]$//')
+    [ -n "$disk" ]
+    # Verify iostat knows about this disk
+    iostat -DI 2>/dev/null | awk -v d="$disk" '$1 == d { found=1 } END { exit !found }'
+}
+
+@test "entropy: patched script contains OpenBSD arc4random path" {
+    grep -q 'arc4random' "$BYOBU_SRC/usr/lib/byobu/entropy"
+}
+
+@test "entropy: patched script displays N/A on OpenBSD" {
+    grep -q 'N/A' "$BYOBU_SRC/usr/lib/byobu/entropy"
+}
+
 @test "sed -i portable detection works on OpenBSD" {
     tmpfile=$(mktemp)
     echo "hello" > "$tmpfile"

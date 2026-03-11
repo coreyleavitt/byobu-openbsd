@@ -27,12 +27,12 @@ cd byobu-openbsd
 | `uptime` | Reads `/proc/uptime` | Uses `sysctl kern.boottime` |
 | `load_average` | Reads `/proc/loadavg` | Uses `sysctl vm.loadavg` |
 | `disk` | Uses `df -P`, reads `/proc/mounts` | Drops `-P`, uses `mount(8)` output |
-| `disk_io` | Reads `/sys/block/*/stat` | Gracefully disabled (no equivalent) |
+| `disk_io` | Reads `/sys/block/*/stat` | Uses `iostat -DI` for cumulative KB per disk |
 | `cpu_count` | Reads `/proc/cpuinfo` | Uses `sysctl hw.ncpuonline` |
 | `fan_speed` | Reads `/sys/class/hwmon` | Uses `sysctl hw.sensors` |
 | `swap` | Reads `/proc/meminfo` | Uses `swapctl -sk` |
 | `network` | Reads `/proc/net/dev` | Uses `netstat -ibn` |
-| `entropy` | Reads `/proc/sys/kernel/random` | Silently skipped (OpenBSD uses arc4random) |
+| `entropy` | Reads `/proc/sys/kernel/random` | Displays "N/A" (OpenBSD uses arc4random) |
 | `raid` | Reads `/proc/mdstat` | Detail uses `bioctl(8)` |
 | `ip_address` | Reads `/proc/net/ipv6_route` | Uses `ifconfig(8)` |
 | `wifi_quality` | Uses `iw`/`iwconfig` (Linux) | Uses `ifconfig(8)` signal data |
@@ -42,10 +42,10 @@ cd byobu-openbsd
 | `get_now()` | Reads `/proc/uptime` | Uses `sysctl kern.boottime` |
 | `get_network_interface()` | Reads `/proc/net/route` | Uses `route -n get default` |
 
-## Not Supported on OpenBSD
+## OpenBSD Notes
 
-- **disk_io**: No `/sys/block` equivalent; the status indicator is silently disabled.
-- **entropy**: OpenBSD does not expose entropy pool size; silently skipped.
+- **disk_io**: Uses `iostat -DI` for combined read+write throughput (Linux separates read/write via `/sys/block`).
+- **entropy**: Displays "N/A" -- OpenBSD uses `arc4random(3)` which is always fully seeded; no pool metric exists.
 
 ## Project Structure
 
