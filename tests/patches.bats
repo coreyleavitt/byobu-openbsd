@@ -247,21 +247,17 @@ setup() {
     grep -q 'N/A' "$BYOBU_SRC/usr/lib/byobu/entropy"
 }
 
-@test "sed -i portable detection works on OpenBSD" {
-    # Verify the byobu_sed_inline function approach works correctly:
-    # defining a function that passes -i '' as separate arguments to sed
-    byobu_sed_inline() { sed -i '' "$@"; }
-    BYOBU_SED_INLINE="byobu_sed_inline"
+@test "sed -i works on OpenBSD" {
     tmpfile=$(mktemp)
     echo "hello" > "$tmpfile"
-    $BYOBU_SED_INLINE -e 's/hello/world/' "$tmpfile"
+    sed -i -e 's/hello/world/' "$tmpfile"
     result=$(cat "$tmpfile")
     rm -f "$tmpfile"
     [ "$result" = "world" ]
 }
 
-@test "constants: byobu_sed_inline function is defined for BSD" {
-    grep -q 'byobu_sed_inline()' "$BYOBU_SRC/usr/lib/byobu/include/constants"
+@test "constants: BYOBU_SED_INLINE is set via follow-symlinks detection" {
+    grep -q 'BYOBU_SED_INLINE' "$BYOBU_SRC/usr/lib/byobu/include/constants"
 }
 
 @test "cycle-status: uses BYOBU_SED_INLINE instead of sed -i" {
