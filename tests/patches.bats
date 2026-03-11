@@ -225,7 +225,7 @@ setup() {
 @test "sed -i portable detection works on OpenBSD" {
     tmpfile=$(mktemp)
     echo "hello" > "$tmpfile"
-    sed -i '' 's/hello/world/' "$tmpfile"
+    sed -i '' -e 's/hello/world/' "$tmpfile"
     result=$(cat "$tmpfile")
     rm -f "$tmpfile"
     [ "$result" = "world" ]
