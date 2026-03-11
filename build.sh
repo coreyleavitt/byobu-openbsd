@@ -41,7 +41,7 @@ if [ "$(uname -s)" != "OpenBSD" ]; then
 	printf "WARNING: This build script is designed for OpenBSD.\n"
 	printf "Detected OS: %s\n" "$(uname -s)"
 	printf "Continue anyway? [y/N] "
-	read ans
+	read -r ans
 	case "$ans" in
 		[Yy]*) ;;
 		*) exit 1 ;;
