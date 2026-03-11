@@ -132,6 +132,5 @@ fi
 printf "==> Done. byobu %s installed to %s\n" "$BYOBU_VERSION" "$PREFIX"
 printf "\nPost-install notes:\n"
 printf "  - Ensure bash is installed: pkg_add bash\n"
-printf "  - Ensure tmux is installed: pkg_add tmux\n"
+printf "  - tmux is included in OpenBSD base (since 5.9)\n"
 printf "  - Run 'byobu' to start\n"
-printf "  - Some status indicators (disk_io, entropy) are not available on OpenBSD\n"

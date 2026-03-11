@@ -7,8 +7,8 @@ Byobu upstream is heavily Linux-centric. This project provides patches and a bui
 ## Quick Start
 
 ```sh
-# Install dependencies
-pkg_add bash tmux autoconf automake curl
+# Install dependencies (tmux is in base since OpenBSD 5.9)
+pkg_add bash autoconf automake curl
 
 # Clone and build
 git clone https://github.com/coreyleavitt/byobu-openbsd.git
@@ -93,7 +93,7 @@ cd byobu-openbsd
 
 **Build time**: autoconf, automake, curl, make
 
-**Run time**: bash, tmux
+**Run time**: bash, tmux (tmux is in OpenBSD base since 5.9)
 
 ## Upstream
 
