@@ -225,8 +225,9 @@ setup() {
 @test "sed -i portable detection works on OpenBSD" {
     tmpfile=$(mktemp)
     echo "hello" > "$tmpfile"
-    sed -i '' -e 's/hello/world/' "$tmpfile"
+    # OpenBSD sed: -i takes backup suffix as next arg, use .bak then remove
+    sed -i.bak 's/hello/world/' "$tmpfile"
     result=$(cat "$tmpfile")
-    rm -f "$tmpfile"
+    rm -f "$tmpfile" "${tmpfile}.bak"
     [ "$result" = "world" ]
 }
