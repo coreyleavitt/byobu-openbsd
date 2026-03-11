@@ -1,0 +1,6 @@
+_build/
+upstream/
+_patched/
+_verify/
+_test_apply/
+*.pyc

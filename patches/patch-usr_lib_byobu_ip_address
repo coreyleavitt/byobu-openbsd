@@ -1,0 +1,17 @@
+--- a/usr/lib/byobu/ip_address	2026-03-11 01:59:03.746789290 -0400
++++ b/usr/lib/byobu/ip_address	2026-03-11 02:19:43.398331116 -0400
+@@ -34,7 +34,13 @@
+ 		interface="$MONITORED_NETWORK"
+ 	else
+ 		case "$IPV6" in
+-			1|true|yes) interface=$(awk '$10 != "lo" { iface=$10 ; }; END { print iface; }' /proc/net/ipv6_route);;
++			1|true|yes)
++				if [ -r /proc/net/ipv6_route ]; then
++					interface=$(awk '$10 != "lo" { iface=$10 ; }; END { print iface; }' /proc/net/ipv6_route)
++				else
++					get_network_interface; interface="$_RET"
++				fi
++			;;
+ 			*) get_network_interface; interface="$_RET";;
+ 		esac
+ 	fi

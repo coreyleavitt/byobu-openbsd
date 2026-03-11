@@ -1,0 +1,23 @@
+--- a/usr/lib/byobu/include/shutil	2026-03-11 01:59:03.746789290 -0400
++++ b/usr/lib/byobu/include/shutil	2026-03-11 02:19:43.322330183 -0400
+@@ -287,6 +287,10 @@
+ 		local s c
+ 		read s c < /proc/uptime
+ 		_RET=${s%.*}
++	elif [ "$(uname -s)" = "OpenBSD" ]; then
++		local btsec
++		btsec=$(sysctl -n kern.boottime)
++		_RET=$(( $(date +%s) - btsec ))
+ 	else
+ 		_RET=$(date +%s);
+ 	fi
+@@ -296,6 +300,9 @@
+         if [ -n "$MONITORED_NETWORK" ]; then
+ 		# Manual override
+                 _RET="$MONITORED_NETWORK"
++	elif [ "$(uname -s)" = "OpenBSD" ]; then
++		# OpenBSD: use route to find the default interface
++		_RET=$(route -n get default 2>/dev/null | awk '/interface:/ { print $2 }')
+         elif [ -e /proc/net/route ]; then
+ 		# Linux systems, read route and interface from procfs
+ 		local Iface Destination Gateway Flags RefCnt Use Metric Mask MTU Window IRTT

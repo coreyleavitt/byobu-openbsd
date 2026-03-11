@@ -1,0 +1,17 @@
+--- a/usr/lib/byobu/disk	2026-03-11 01:59:03.746789290 -0400
++++ b/usr/lib/byobu/disk	2026-03-11 02:19:43.358330625 -0400
+@@ -28,7 +28,13 @@
+ 	# Default to /, but let users override
+ 	[ -z "$MONITORED_DISK" ] && MP="/" || MP="$MONITORED_DISK"
+ 	case $MP in
+-		/dev/*) MP=$(awk '$1 == m { print $2; exit(0); }' "m=$MP" /proc/mounts);;
++		/dev/*)
++			if [ -r /proc/mounts ]; then
++				MP=$(awk '$1 == m { print $2; exit(0); }' "m=$MP" /proc/mounts)
++			else
++				MP=$(mount | awk -v m="$MP" '$1 == m { print $3; exit(0); }')
++			fi
++		;;
+ 	esac
+ 	# this could be done faster with 'stat --file-system --format'
+ 	# but then we'd have to do blocks -> human units ourselves

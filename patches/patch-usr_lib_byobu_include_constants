@@ -1,0 +1,23 @@
+--- a/usr/lib/byobu/include/constants	2026-03-11 01:59:03.746789290 -0400
++++ b/usr/lib/byobu/include/constants	2026-03-11 02:19:43.282329693 -0400
+@@ -54,8 +54,18 @@
+ eval $BYOBU_TEST "$BYOBU_EDITOR" >/dev/null 2>&1 || export BYOBU_EDITOR="vim"
+ 
+ 
+-# Check sed's follow-symlinks feature
+-$BYOBU_SED --follow-symlinks "s///" /dev/null 2>/dev/null && BYOBU_SED_INLINE="$BYOBU_SED -i --follow-symlinks" || BYOBU_SED_INLINE="$BYOBU_SED -i"
++# Portable sed -i: BSD sed requires -i '' (with explicit empty suffix),
++# GNU sed uses -i (no argument). --follow-symlinks is GNU-only.
++case "$(uname -s)" in
++	OpenBSD|FreeBSD|NetBSD|DragonFly|Darwin)
++		BYOBU_SED_INLINE="$BYOBU_SED -i ''"
++	;;
++	*)
++		$BYOBU_SED --follow-symlinks "s///" /dev/null 2>/dev/null && \
++			BYOBU_SED_INLINE="$BYOBU_SED -i --follow-symlinks" || \
++			BYOBU_SED_INLINE="$BYOBU_SED -i"
++	;;
++esac
+ 
+ # Determine if we have ulimit support
+ eval $BYOBU_TEST ulimit >/dev/null 2>&1 && export BYOBU_ULIMIT="ulimit" || export BYOBU_ULIMIT="false"

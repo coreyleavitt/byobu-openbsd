@@ -1,0 +1,26 @@
+--- a/usr/lib/byobu/cpu_freq	2026-03-11 01:59:03.746789290 -0400
++++ b/usr/lib/byobu/cpu_freq	2026-03-11 02:19:43.358330625 -0400
+@@ -20,7 +20,11 @@
+ #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ __cpu_freq_detail() {
+-	cat /proc/cpuinfo
++	if [ -r /proc/cpuinfo ]; then
++		cat /proc/cpuinfo
++	elif [ "$(uname -s)" = "OpenBSD" ]; then
++		sysctl hw.cpuspeed hw.setperf 2>/dev/null
++	fi
+ }
+ 
+ __cpu_freq() {
+@@ -45,6 +49,10 @@
+ 	elif hz=$(sysctl -n hw.cpufrequency 2>/dev/null); then
+ 		fpdiv $hz "1000000000" 1 # 1Ghz
+ 		freq="$_RET"
++	elif hz=$(sysctl -n hw.cpuspeed 2>/dev/null); then
++		# OpenBSD: hw.cpuspeed is in MHz
++		fpdiv $hz "1000" 1
++		freq="$_RET"
+ 	fi
+ 	[ -n "$freq" ] || return
+ 	color b c W; printf "%s" "$freq"; color -; color c W; printf "%s" "$ICON_GHz"; color --

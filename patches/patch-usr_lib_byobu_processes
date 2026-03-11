@@ -1,0 +1,15 @@
+--- a/usr/lib/byobu/processes	2026-03-11 01:59:03.746789290 -0400
++++ b/usr/lib/byobu/processes	2026-03-11 02:19:43.410331262 -0400
+@@ -20,7 +20,11 @@
+ #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ __processes_detail() {
+-	ps -ej 2>/dev/null
++	if [ "$(uname -s)" = "OpenBSD" ]; then
++		ps -ax 2>/dev/null
++	else
++		ps -ej 2>/dev/null
++	fi
+ }
+ 
+ __processes() {

@@ -1,0 +1,14 @@
+--- a/usr/lib/byobu/uptime	2026-03-11 01:59:03.746789290 -0400
++++ b/usr/lib/byobu/uptime	2026-03-11 02:19:43.358330625 -0400
+@@ -30,6 +30,11 @@
+ 	if [ -r /proc/uptime ]; then
+ 		read u idle < /proc/uptime
+ 		u=${u%.*}
++	elif [ "$(uname -s)" = "OpenBSD" ]; then
++		# OpenBSD: kern.boottime is epoch seconds directly
++		local bt
++		bt=$(sysctl -n kern.boottime)
++		u=$(($(date +%s) - $bt))
+ 	elif [ -x /usr/sbin/sysctl ]; then
+ 		# MacOS support
+ 		u=$(/usr/sbin/sysctl -n kern.boottime | cut -f4 -d' ' | cut -d',' -f1)

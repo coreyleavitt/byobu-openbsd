@@ -1,0 +1,25 @@
+--- a/usr/lib/byobu/load_average	2026-03-11 01:59:03.746789290 -0400
++++ b/usr/lib/byobu/load_average	2026-03-11 02:19:43.358330625 -0400
+@@ -20,12 +20,21 @@
+ #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ __load_average_detail() {
+-	cat /proc/loadavg
++	if [ -r /proc/loadavg ]; then
++		cat /proc/loadavg
++	elif [ "$(uname -s)" = "OpenBSD" ]; then
++		sysctl vm.loadavg 2>/dev/null
++	else
++		uptime
++	fi
+ }
+ 
+ __load_average() {
+ 	if [ -r "/proc/loadavg" ]; then
+ 		read one five fifteen other < /proc/loadavg
++	elif [ "$(uname -s)" = "OpenBSD" ]; then
++		# vm.loadavg returns "x.xx y.yy z.zz"
++		one=$(sysctl -n vm.loadavg 2>/dev/null | awk '{ print $1 }')
+ 	else
+ 		one=$(uptime | sed -e "s/.*://" | awk '{print $1}')
+ 	fi
