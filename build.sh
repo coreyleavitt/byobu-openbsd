@@ -48,24 +48,33 @@ if [ "$(uname -s)" != "OpenBSD" ]; then
 	esac
 fi
 
-for cmd in curl tar patch autoconf automake make; do
-	if ! command -v "$cmd" >/dev/null 2>&1; then
-		printf "ERROR: Required tool '%s' not found.\n" "$cmd"
-		case "$cmd" in
-			autoconf) printf "  Install: pkg_add autoconf\n" ;;
-			automake) printf "  Install: pkg_add automake\n" ;;
-			*) printf "  Install: pkg_add %s\n" "$cmd" ;;
-		esac
-		exit 1
-	fi
-done
+if [ "$PATCH_ONLY" = "1" ]; then
+	for cmd in curl tar patch; do
+		if ! command -v "$cmd" >/dev/null 2>&1; then
+			printf "ERROR: Required tool '%s' not found.\n" "$cmd"
+			exit 1
+		fi
+	done
+else
+	for cmd in curl tar patch autoconf automake make; do
+		if ! command -v "$cmd" >/dev/null 2>&1; then
+			printf "ERROR: Required tool '%s' not found.\n" "$cmd"
+			case "$cmd" in
+				autoconf) printf "  Install: pkg_add autoconf\n" ;;
+				automake) printf "  Install: pkg_add automake\n" ;;
+				*) printf "  Install: pkg_add %s\n" "$cmd" ;;
+			esac
+			exit 1
+		fi
+	done
 
-# Check for bash and tmux (runtime dependencies)
-for cmd in bash tmux; do
-	if ! command -v "$cmd" >/dev/null 2>&1; then
-		printf "WARNING: Runtime dependency '%s' not found. Install: pkg_add %s\n" "$cmd" "$cmd"
-	fi
-done
+	# Check for bash and tmux (runtime dependencies)
+	for cmd in bash tmux; do
+		if ! command -v "$cmd" >/dev/null 2>&1; then
+			printf "WARNING: Runtime dependency '%s' not found. Install: pkg_add %s\n" "$cmd" "$cmd"
+		fi
+	done
+fi
 
 # --- Download ---
 
