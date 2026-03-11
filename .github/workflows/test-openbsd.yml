@@ -40,11 +40,27 @@ jobs:
           run: |
             set -e
             echo "==> Installing dependencies..."
-            sudo pkg_add -I bash tmux autoconf-2.71 automake-1.16.5 curl bats
+            # OpenBSD pkg_add uses stem names; versioned flavors are
+            # selected via AUTOCONF_VERSION/AUTOMAKE_VERSION env vars.
+            # tmux is not in the base image and must be installed.
+            # bats may not be packaged; install from git if needed.
+            sudo pkg_add -I bash curl
+            sudo pkg_add -I tmux || echo "tmux may already be installed"
+            sudo pkg_add -I autoconf automake || true
+
+            # Detect installed autoconf/automake versions
+            export AUTOCONF_VERSION=$(ls /usr/local/bin/autoconf-* 2>/dev/null | head -1 | grep -o '[0-9]\.[0-9]*' | head -1 || echo "2.71")
+            export AUTOMAKE_VERSION=$(ls /usr/local/bin/automake-* 2>/dev/null | head -1 | grep -o '[0-9]\.[0-9]*' | head -1 || echo "1.16")
+            echo "Using AUTOCONF_VERSION=$AUTOCONF_VERSION AUTOMAKE_VERSION=$AUTOMAKE_VERSION"
+
+            # Install bats-core from git if not packaged
+            if ! command -v bats >/dev/null 2>&1; then
+              sudo pkg_add -I git || true
+              git clone --depth 1 https://github.com/bats-core/bats-core.git /tmp/bats
+              sudo /tmp/bats/install.sh /usr/local
+            fi
 
             echo "==> Building byobu with patches..."
-            export AUTOCONF_VERSION=2.71
-            export AUTOMAKE_VERSION=1.16
             ./build.sh --patch-only
 
             echo "==> Running integration tests..."
