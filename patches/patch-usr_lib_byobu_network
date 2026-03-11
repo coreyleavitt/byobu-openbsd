@@ -1,5 +1,5 @@
---- a/usr/lib/byobu/network	2026-03-11 01:59:03.746789290 -0400
-+++ b/usr/lib/byobu/network	2026-03-11 02:19:43.390331017 -0400
+--- a/usr/lib/byobu/network	2026-03-11 02:51:13.015882350 -0400
++++ b/usr/lib/byobu/network	2026-03-11 02:51:13.595889212 -0400
 @@ -21,7 +21,11 @@
  
  __network_detail() {

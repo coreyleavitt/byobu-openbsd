@@ -1,6 +1,6 @@
---- a/usr/lib/byobu/include/shutil	2026-03-11 01:59:03.746789290 -0400
-+++ b/usr/lib/byobu/include/shutil	2026-03-11 02:19:43.322330183 -0400
-@@ -287,6 +287,10 @@
+--- a/usr/lib/byobu/include/shutil	2026-03-11 02:51:13.011882302 -0400
++++ b/usr/lib/byobu/include/shutil	2026-03-11 02:51:13.559888786 -0400
+@@ -285,6 +285,10 @@
  		local s c
  		read s c < /proc/uptime
  		_RET=${s%.*}
@@ -11,7 +11,7 @@
  	else
  		_RET=$(date +%s);
  	fi
-@@ -296,6 +300,9 @@
+@@ -294,6 +298,9 @@
          if [ -n "$MONITORED_NETWORK" ]; then
  		# Manual override
                  _RET="$MONITORED_NETWORK"

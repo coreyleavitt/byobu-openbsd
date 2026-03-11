@@ -1,5 +1,5 @@
---- a/usr/lib/byobu/include/constants	2026-03-11 01:59:03.746789290 -0400
-+++ b/usr/lib/byobu/include/constants	2026-03-11 02:19:43.282329693 -0400
+--- a/usr/lib/byobu/include/constants	2026-03-11 02:51:13.011882302 -0400
++++ b/usr/lib/byobu/include/constants	2026-03-11 02:51:13.535888503 -0400
 @@ -54,8 +54,18 @@
  eval $BYOBU_TEST "$BYOBU_EDITOR" >/dev/null 2>&1 || export BYOBU_EDITOR="vim"
  

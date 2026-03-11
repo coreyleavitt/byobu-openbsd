@@ -1,5 +1,5 @@
---- a/usr/lib/byobu/memory	2026-03-11 01:59:03.746789290 -0400
-+++ b/usr/lib/byobu/memory	2026-03-11 02:19:43.338330380 -0400
+--- a/usr/lib/byobu/memory	2026-03-11 02:51:13.015882350 -0400
++++ b/usr/lib/byobu/memory	2026-03-11 02:51:13.575888976 -0400
 @@ -20,7 +20,11 @@
  #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  
@@ -13,10 +13,10 @@
  }
  
  __memory() {
-@@ -47,6 +51,20 @@
- 		free=$(((${page_size} * (${free_count} + ${cache_count} + ${inactive_count})) / 1024))
- 		buffers=0
- 		cached=0
+@@ -36,6 +40,20 @@
+ 			esac
+ 			[ -n "${free}" -a -n "${total}" -a -n "${buffers}" -a -n "${cached}" ] && break;
+ 		done < /proc/meminfo
 +	elif [ "$(uname -s)" = "OpenBSD" ]; then
 +		# OpenBSD support: use sysctl and vmstat
 +		local physmem pagesize free_pages

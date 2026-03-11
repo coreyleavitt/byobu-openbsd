@@ -1,5 +1,5 @@
---- a/usr/lib/byobu/entropy	2026-03-11 01:59:03.746789290 -0400
-+++ b/usr/lib/byobu/entropy	2026-03-11 02:19:43.398331116 -0400
+--- a/usr/lib/byobu/entropy	2026-03-11 02:51:13.011882302 -0400
++++ b/usr/lib/byobu/entropy	2026-03-11 02:51:13.599889260 -0400
 @@ -19,7 +19,10 @@
  #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  

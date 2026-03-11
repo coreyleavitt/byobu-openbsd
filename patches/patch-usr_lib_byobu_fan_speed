@@ -1,5 +1,5 @@
---- a/usr/lib/byobu/fan_speed	2026-03-11 01:59:03.746789290 -0400
-+++ b/usr/lib/byobu/fan_speed	2026-03-11 02:19:43.366330723 -0400
+--- a/usr/lib/byobu/fan_speed	2026-03-11 02:51:13.011882302 -0400
++++ b/usr/lib/byobu/fan_speed	2026-03-11 02:51:13.587889118 -0400
 @@ -26,6 +26,16 @@
  
  __fan_speed() {
