@@ -1,8 +1,8 @@
---- a/usr/lib/byobu/cpu_freq	2026-03-11 02:51:13.011882302 -0400
-+++ b/usr/lib/byobu/cpu_freq	2026-03-11 02:51:13.587889118 -0400
+--- a/usr/lib/byobu/cpu_freq
++++ b/usr/lib/byobu/cpu_freq
 @@ -20,7 +20,11 @@
  #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- 
+
  __cpu_freq_detail() {
 -	cat /proc/cpuinfo
 +	if [ -r /proc/cpuinfo ]; then
@@ -11,16 +11,18 @@
 +		sysctl hw.cpuspeed hw.setperf 2>/dev/null
 +	fi
  }
- 
+
  __cpu_freq() {
-@@ -41,6 +45,10 @@
- 	elif hz=$(sysctl -n hw.cpufrequency 2>/dev/null); then
- 		fpdiv $hz "1000000000" 1 # 1Ghz
- 		freq="$_RET"
-+	elif hz=$(sysctl -n hw.cpuspeed 2>/dev/null); then
+@@ -38,7 +42,11 @@
+ 			freq=$(egrep -i -m 1 "^bogomips" /proc/cpuinfo | awk -F"[:.]" '{ print $2 }')
+ 			freq=$(printf "%s %s" "$freq" "$count" | awk '{printf "%01.1f\n", $1/$2/1000}')
+ 		fi
+-	elif hz=$(sysctl -n hw.cpufrequency 2>/dev/null); then
++	elif hz=$(sysctl -n hw.cpuspeed 2>/dev/null) && [ -n "$hz" ]; then
 +		# OpenBSD: hw.cpuspeed is in MHz
 +		fpdiv $hz "1000" 1
 +		freq="$_RET"
++	elif hz=$(sysctl -n hw.cpufrequency 2>/dev/null) && [ -n "$hz" ]; then
+ 		fpdiv $hz "1000000000" 1 # 1Ghz
+ 		freq="$_RET"
  	fi
- 	[ -n "$freq" ] || return
- 	color b c W; printf "%s" "$freq"; color -; color c W; printf "%s" "$ICON_GHz"; color --

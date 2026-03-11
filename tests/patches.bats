@@ -248,11 +248,30 @@ setup() {
 }
 
 @test "sed -i portable detection works on OpenBSD" {
+    # Verify the byobu_sed_inline function approach works correctly:
+    # defining a function that passes -i '' as separate arguments to sed
+    byobu_sed_inline() { sed -i '' "$@"; }
+    BYOBU_SED_INLINE="byobu_sed_inline"
     tmpfile=$(mktemp)
     echo "hello" > "$tmpfile"
-    # OpenBSD sed: -i takes backup suffix as next arg, use .bak then remove
-    sed -i.bak 's/hello/world/' "$tmpfile"
+    $BYOBU_SED_INLINE -e 's/hello/world/' "$tmpfile"
     result=$(cat "$tmpfile")
-    rm -f "$tmpfile" "${tmpfile}.bak"
+    rm -f "$tmpfile"
     [ "$result" = "world" ]
+}
+
+@test "constants: byobu_sed_inline function is defined for BSD" {
+    grep -q 'byobu_sed_inline()' "$BYOBU_SRC/usr/lib/byobu/include/constants"
+}
+
+@test "cycle-status: uses BYOBU_SED_INLINE instead of sed -i" {
+    ! grep -q 'sed -i' "$BYOBU_SRC/usr/lib/byobu/include/cycle-status"
+    grep -q 'BYOBU_SED_INLINE' "$BYOBU_SRC/usr/lib/byobu/include/cycle-status"
+}
+
+@test "toggle-utf8: uses BYOBU_SED_INLINE instead of sed -i" {
+    # toggle-utf8.in is the template; after autoconf it becomes toggle-utf8
+    file="$BYOBU_SRC/usr/lib/byobu/include/toggle-utf8.in"
+    ! grep -q 'sed -i' "$file"
+    grep -q 'BYOBU_SED_INLINE' "$file"
 }
